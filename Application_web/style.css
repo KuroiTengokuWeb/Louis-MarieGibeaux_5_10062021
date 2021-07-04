@@ -1,0 +1,26 @@
+#cart_total {
+  justify-content: flex-end;
+}
+#cart_total p:first-child {
+  margin-right: 10px;
+}
+#cart_total p:last-child,
+.price {
+  font-weight: bold;
+}
+#custom{
+  margin-left: 10px;
+}
+a {
+  text-decoration: none;
+  color: #000;
+}
+a:hover {
+  color: blue;
+}
+.product_image {
+  height: 200px;
+}
+footer a {
+  color: #fff;
+}
