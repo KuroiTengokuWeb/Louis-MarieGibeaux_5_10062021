@@ -1,14 +1,6 @@
-//const { table } = require("console");
-
 var cart = JSON.parse(localStorage.getItem('cart')) || [];
 
-debug("Panier Start", cart);
-
 function add_cart(idProd) {
-    // add entry si choix d'une couleur
-
-
-
     //////////////////////////////////////////////
     // Dans script.js déclaration de products 
     // products = la liste de tout les produits fetch et set dans script.js
@@ -26,7 +18,7 @@ function add_cart(idProd) {
     // En ternaire
     //product.qty = product.qty == undefined ? 1 : product.qty
 
-    // En cour
+    // TODO couleur dans panier + split qty product couleur differente
     //console.log(product);
 
     //////////////////////////////////////////////
@@ -48,7 +40,6 @@ function calcTotalPrice() {
     var total = 0;
     // parcours les products du panier et
     // increment le total par le prix du produit * la qty
-    console.log(cart);
     for (i in cart) {
         total += cart[i].price * cart[i].qty;
     }
@@ -68,8 +59,8 @@ function editProductQty(idProd) {
 
     var product = cart.filter(product => product._id == idProd)[0],
         inputQty = parseInt(document.getElementById("prod-qty-" + idProd).value);
-
     product.qty = inputQty;
+
     if (product.qty <= 0) deleteProduct(idProd);
     localStorage.setItem("cart", JSON.stringify(cart));
 
@@ -95,9 +86,9 @@ function getCart() {
 }
 
 //////////////////////////////////////////////
+// Retourne l'id du produit contenu dans l'url
 function getURL() {
     const queryString = window.location.search;
-    console.log(queryString);
     if (queryString) {
         const urlParams = new URLSearchParams(queryString);
         const product_id = urlParams.get('id');
@@ -129,25 +120,25 @@ function getProduct() {
                 prod.innerHTML +=
                     '<div class="card mb-3" data-id="' +
                     value._id +
-                    '"><div class="row g-0"><div class="col-md-4"><img class="product_image" src="' +
+                    '"><div class="row g-0 bg-color"><div class="col-md-4"><div class="card-body"><img class="product_image" src="' +
                     value.imageUrl +
                     '" alt="' +
                     value.name +
-                    '"></div><div class="col-md-6"><div class="card-body"><h5 class="card-title">' +
+                    '"></div></div><div class="col-md-6"><div class="card-body"><h5 class="card-title">' +
                     value.name +
                     '</h5><p class="card-text">' +
                     value.description +
-                    '</p><label for="custom">Couleurs : </label><select id="custom"></select></div></div><div class="col-md-2"><p class="card-text"> Prix : <span class="price">' +
+                    '</p><label for="custom">Couleurs : </label><select id="custom"></select></div></div><div class="col-md-2"><div class="card-body"><p class="card-text price-color"> Prix : <span class="price">' +
                     value.price +
-                    '€<span></p><p class="card-text">Quantité : </p><input class="w-100" id="prod-qty-' +
+                    '€</span></p><p class="card-text">Quantité : </p><input class="w-25" id="prod-qty-' +
                     value._id + '" name="prod-qty-' +
-                    value._id + '" type="number" min="1" value="1" /></div><button class="btn btn-info" onclick="add_cart(\'' +
+                    value._id + '" type="number" min="1" value="1" /><button class="btn" onclick="add_cart(\'' +
                     value._id +
-                    '\')">Ajouter au panier</button></div></div></div></div>';
-                    var clr = document.getElementById("custom");
-                    for(i in value.colors){
-                        clr.innerHTML += "<option>"+value.colors[i]+"</option>";
-                    } 
+                    '\')">Ajouter au panier</button></div></div></div></div></div></div>';
+                var clr = document.getElementById("custom");
+                for (i in value.colors) {
+                    clr.innerHTML += "<option>" + value.colors[i] + "</option>";
+                }
             } else {
                 console.log("error id list_prod");
             }
@@ -171,52 +162,53 @@ function debug(name, vr) {
 //////////////////////////////////////////////
 // Envoi du formulaire
 function sendForm(e) {
-    // Transforme le panier en array d'ID produit
+    // Transforme le panier en array d'id produit
     var order = [];
-    for (prod in cart){
-        for (i=0; i < cart[prod].qty; i++){
+    for (prod in cart) {
+        for (i = 0; i < cart[prod].qty; i++) {
             order.push(cart[prod]._id);
         }
     }
+    // Récupération du formulaire
     var orderReq = {
-        contact :{
-          firstName:JSON.stringify(document.getElementById("firstnameInput").value),
-          lastName:JSON.stringify(document.getElementById("lastnameInput").value),
-          address:JSON.stringify(document.getElementById("adressInput").value),
-          city:JSON.stringify(document.getElementById("cityInput").value),
-          email:JSON.stringify(document.getElementById("emailInput").value)
+        contact: {
+            firstName: JSON.stringify(document.getElementById("firstnameInput").value),
+            lastName: JSON.stringify(document.getElementById("lastnameInput").value),
+            address: JSON.stringify(document.getElementById("adressInput").value),
+            city: JSON.stringify(document.getElementById("cityInput").value),
+            email: JSON.stringify(document.getElementById("emailInput").value)
         },
         products: order
     };
 
     e.preventDefault();
     fetch("http://localhost:3000/api/teddies/order", {
-      method: "POST",
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(orderReq)
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(orderReq)
+    })
+        .then(function (res) {
+            if (res.ok) {
+                return res.json();
+            }
+        })
+        .then(function (value) {
+            console.log(value);
+            var check = document.getElementById("check-form");
+            check.innerHTML = "La commande " + value.orderId +
+                " est validée. Nombre d'article " + value.products.length;
+            check.classList.add("alert-success");
+        })
+        .catch(function (err) {
+            console.log(err);
+        });
+}
 
-    })
-    .then(function(res) {
-      if (res.ok) {
-        return res.json();
-      }
-    })
-    .then(function(value){
-        console.log(value);
-        var check = document.getElementById("check-form");
-        check.innerHTML = "La commande " + value.orderId + " est validée. Nombre d'article "+ value.products.length;
-        check.classList.add("alert-success");
-    })
-    .catch(function(err) {
-        console.log(err);
-    });
-  }
-  
-  document
+document
     .getElementById("form")
     .addEventListener("submit", sendForm);
 
-      
+
 
