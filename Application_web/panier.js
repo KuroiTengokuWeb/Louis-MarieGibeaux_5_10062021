@@ -112,8 +112,8 @@ function getProduct() {
             }
         })
         .then(function (value) {
-            if (document.getElementById("prod_test")) {
-                prod = document.getElementById("prod_test");
+            if (document.getElementById("article")) {
+                prod = document.getElementById("article");
                 prod.innerHTML +=
                     '<div class="card mb-3" data-id="' +
                     value._id +
@@ -147,7 +147,7 @@ function getProduct() {
 
 //////////////////////////////////////////////
 // Transforme le panier en array d'id produit
-function convertCart(){
+function convertCart() {
     var idList = [];
     for (prod in cart) {
         for (i = 0; i < cart[prod].qty; i++) {
@@ -162,10 +162,10 @@ function convertCart(){
 document.addEventListener('submit', function (event) {
 
     event.preventDefault();
-    
+
     // Contenu de la requête
     var orderReq = {
-        contact:  Object.fromEntries(new FormData(event.target)),
+        contact: Object.fromEntries(new FormData(event.target)),
         products: convertCart()
     };
     console.log(orderReq);

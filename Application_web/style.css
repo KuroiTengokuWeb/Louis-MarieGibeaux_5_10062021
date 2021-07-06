@@ -5,7 +5,7 @@
   margin-right: 10px;
 }
 #cart_total p:last-child {
-  color : burlywood;
+  color: burlywood;
 }
 .price {
   color: white !important;
@@ -68,7 +68,7 @@ footer a:hover {
   border-color: burlywood;
   background-color: white;
 }
-.card-text{
+.card-text {
   display: inline-block;
 }
 /*

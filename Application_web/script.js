@@ -46,7 +46,7 @@ fetch("http://localhost:3000/api/teddies")
                     '€</span></p></div></div></div></div>';
             }
         } else {
-           // console.log("error id list_prod");
+            // console.log("error id list_prod");
         }
     })
     .catch(function (err) {
@@ -83,7 +83,7 @@ if (cart_list) {
     console.log("error id cart_list");
 }
 
-var test_pro = document.getElementById("prod_test");
+var test_pro = document.getElementById("article");
 if (test_pro) {
     getProduct();
 } else {
