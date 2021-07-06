@@ -4,6 +4,9 @@
 #cart_total p:first-child {
   margin-right: 10px;
 }
+#cart_total p:last-child {
+  color : burlywood;
+}
 .price {
   color: white !important;
   display: contents;

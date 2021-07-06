@@ -66,7 +66,7 @@ function editProductQty(idProd) {
 
     // Update du prix total
     var total = calcTotalPrice();
-    document.getElementById("cart_total").childNodes[1].innerHTML = total;
+    document.getElementById("cart_total").childNodes[1].innerHTML = total + "€";
 }
 
 
@@ -104,8 +104,6 @@ function getProduct() {
     /*if (product_id) {
         console.log(products);
         let prod = cart.filter(product => product._id == product_id)[0] || [];
-        console.log("product id check");
-        console.log(prod);
     }*/
     fetch("http://localhost:3000/api/teddies/" + product_id)
         .then(function (res) {
@@ -115,7 +113,6 @@ function getProduct() {
         })
         .then(function (value) {
             if (document.getElementById("prod_test")) {
-
                 prod = document.getElementById("prod_test");
                 prod.innerHTML +=
                     '<div class="card mb-3" data-id="' +
@@ -140,13 +137,61 @@ function getProduct() {
                     clr.innerHTML += "<option>" + value.colors[i] + "</option>";
                 }
             } else {
-                console.log("error id list_prod");
+                //console.log("error id list_prod");
             }
         })
         .catch(function (err) {
             console.log(err);
         });
 }
+
+//////////////////////////////////////////////
+// Transforme le panier en array d'id produit
+function convertCart(){
+    var idList = [];
+    for (prod in cart) {
+        for (i = 0; i < cart[prod].qty; i++) {
+            idList.push(cart[prod]._id);
+        }
+    }
+    return idList;
+}
+
+//////////////////////////////////////////////
+// Envoi du formulaire
+document.addEventListener('submit', function (event) {
+
+    event.preventDefault();
+    
+    // Contenu de la requête
+    var orderReq = {
+        contact:  Object.fromEntries(new FormData(event.target)),
+        products: convertCart()
+    };
+    console.log(orderReq);
+    // Requête fetch POST
+    fetch('http://localhost:3000/api/teddies/order', {
+        method: 'POST',
+        body: JSON.stringify(orderReq),
+        headers: {
+            'Content-type': 'application/json; charset=UTF-8'
+        }
+    }).then(function (response) {
+        if (response.ok) {
+            return response.json();
+        }
+        return Promise.reject(response);
+    }).then(function (data) {
+        console.log(data);
+        // Message de validation de la commande + info
+        var check = document.getElementById("check-form");
+        check.innerHTML = "La commande " + data.orderId +
+            " est validée. Nombre d'article " + data.products.length;
+        check.classList.add("alert-success");
+    }).catch(function (error) {
+        console.warn(error);
+    });
+});
 
 //////////////////////////////////////////////
 // Debug
@@ -158,57 +203,3 @@ function debug(name, vr) {
         "\n =============================== \n"
     );
 }
-
-//////////////////////////////////////////////
-// Envoi du formulaire
-function sendForm(e) {
-    // Transforme le panier en array d'id produit
-    var order = [];
-    for (prod in cart) {
-        for (i = 0; i < cart[prod].qty; i++) {
-            order.push(cart[prod]._id);
-        }
-    }
-    // Récupération du formulaire
-    var orderReq = {
-        contact: {
-            firstName: JSON.stringify(document.getElementById("firstnameInput").value),
-            lastName: JSON.stringify(document.getElementById("lastnameInput").value),
-            address: JSON.stringify(document.getElementById("adressInput").value),
-            city: JSON.stringify(document.getElementById("cityInput").value),
-            email: JSON.stringify(document.getElementById("emailInput").value)
-        },
-        products: order
-    };
-
-    e.preventDefault();
-    fetch("http://localhost:3000/api/teddies/order", {
-        method: "POST",
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(orderReq)
-    })
-        .then(function (res) {
-            if (res.ok) {
-                return res.json();
-            }
-        })
-        .then(function (value) {
-            console.log(value);
-            var check = document.getElementById("check-form");
-            check.innerHTML = "La commande " + value.orderId +
-                " est validée. Nombre d'article " + value.products.length;
-            check.classList.add("alert-success");
-        })
-        .catch(function (err) {
-            console.log(err);
-        });
-}
-
-document
-    .getElementById("form")
-    .addEventListener("submit", sendForm);
-
-
-

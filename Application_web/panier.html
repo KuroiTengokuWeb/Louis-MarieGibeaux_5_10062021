@@ -5,7 +5,7 @@
   <!-- Required meta tags -->
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta description="Vente d'article">
+  <meta name="description" content="Vente d'article">
   <!-- Bootstrap CSS -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
@@ -41,36 +41,37 @@
           <h1>Panier</h1>
           <!--Liste Produit-->
           <div id="cart_list"></div>
-          <div id="cart_total" class="d-flex"></div>
+          <div id="cart_total" class="d-flex">
+          </div>
         </div>
       </div>
       <div class="row bg-color">
         <form id="form">
           <div class="mb-3">
-            <label for="firstnameInput" class="form-label">Nom</label>
-            <input type="name" class="form-control" id="firstnameInput">
+            <label for="firstname" class="form-label">Nom</label>
+            <input type="text" class="form-control" name="firstName" id="firstname">
           </div>
           <div class="mb-3">
-            <label for="lastnameInput" class="form-label">Prénom</label>
-            <input type="name" class="form-control" id="lastnameInput">
+            <label for="lastname" class="form-label">Prénom</label>
+            <input type="text" class="form-control" name="lastName" id="lastname">
           </div>
           <div class="mb-3">
-            <label for="adressInput" class="form-label">Adresse</label>
-            <input type="text" class="form-control" id="adressInput">
+            <label for="address" class="form-label">Adresse</label>
+            <input type="text" class="form-control" name="address" id="address">
           </div>
           <div class="mb-3">
-            <label for="cityInput" class="form-label">Ville</label>
-            <input type="text" class="form-control" id="cityInput">
+            <label for="city" class="form-label">Ville</label>
+            <input type="text" class="form-control" name="city" id="city">
           </div>
           <div class="mb-3">
-            <label for="emailInput" class="form-label">Adresse email</label>
-            <input type="email" class="form-control" id="emailInput">
+            <label for="email" class="form-label">Adresse email</label>
+            <input type="email" class="form-control" name="email" id="email">
           </div>
-          <div class="mb-3 form-check">
+          <!--<div class="mb-3 form-check">
             <input type="checkbox" class="form-check-input" id="exampleCheck1">
             <label class="form-check-label" for="exampleCheck1">Check me out</label>
-          </div>
-          <button type="submit" class="btn btn-primary">Passer la commande</button>
+          </div>-->
+          <button type="submit" class="btn">Passer la commande</button>
         </form>
         <p id="check-form"></p>
       </div>
