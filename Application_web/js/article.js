@@ -15,7 +15,7 @@ fetch("http://localhost:3000/api/teddies")
     .catch(function (err) {
         console.log(err);
     });
-    
+
 //////////////////////////////////////////////
 // Retourne l'id du produit contenu dans l'url
 function getURL() {
@@ -52,14 +52,14 @@ function getProduct() {
                     value.name +
                     '</h5><p class="card-text">' +
                     value.description +
-                    '</p><label for="product-color-'+value._id+'">Couleurs : </label><select id="product-color-'+value._id+'"></select></div></div><div class="col-md-2"><div class="card-body"><p class="card-text price-color"> Prix : <span class="price">' +
+                    '</p><label for="product-color-' + value._id + '">Couleurs : </label><select id="product-color-' + value._id + '"></select></div></div><div class="col-md-2"><div class="card-body"><p class="card-text price-color"> Prix : <span class="price">' +
                     value.price / 100 +
                     '€</span></p><p class="card-text">Quantité : </p><input class="w-25" id="prod-qty-' +
                     value._id + '" name="prod-qty-' +
                     value._id + '" type="number" min="1" value="1" /><button class="btn" onclick="add_cart(\'' +
                     value._id +
                     '\')">Ajouter au panier</button></div></div></div></div></div></div>';
-                var clr = document.getElementById("product-color-"+value._id);
+                var clr = document.getElementById("product-color-" + value._id);
                 for (i in value.colors) {
                     clr.innerHTML += "<option value=\"" + value.colors[i] + "\">" + value.colors[i] + "</option>";
                 }
@@ -67,5 +67,6 @@ function getProduct() {
         })
         .catch(function (err) {
             console.log(err);
+            window.location.href = "index.html";
         });
 }

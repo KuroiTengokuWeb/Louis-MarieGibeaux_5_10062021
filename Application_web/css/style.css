@@ -21,17 +21,17 @@
 }
 a {
   text-decoration: none;
-  color: burlywood;
+  color: white;
 }
 a:hover {
-  color: blanchedalmond;
+  color: burlywood;
 }
 .product_image {
   height: 200px;
 }
 footer a,
 label {
-  color: burlywood;
+  color: white;
 }
 .bg-color {
   background-color: darkcyan;
@@ -41,55 +41,52 @@ label {
   font-size: 18px;
   justify-content: center;
   display: flex;
-  color: burlywood;
+  color: white;
 }
 
 .nav-link,
 h5 {
-  color: burlywood !important;
+  color: white !important;
   font-size: 20px;
 }
 .nav-link:hover {
-  color: blanchedalmond !important;
-}
-footer a {
   color: burlywood !important;
 }
+footer a {
+  color: white !important;
+}
 footer a:hover {
-  color: blanchedalmond !important;
+  color: burlywood !important;
 }
 .btn {
-  color: white;
-  border-color: burlywood;
-  background-color: burlywood;
-}
-.btn:hover {
   color: burlywood;
   border-color: burlywood;
   background-color: white;
 }
+.btn:hover {
+  color: white;
+  border-color: burlywood;
+  background-color: burlywood;
+}
 .card-text {
   display: inline-block;
 }
-/*
-.card{
-  width: 30%;
-}*/
 
+/*
 input:invalid {
   background-color: red;
 }
-
+*/
 input:valid {
-  background-color:  yellow;
+  border: #0dcaf0 solid 1px;
+  background: #0dcaf0;
 }
 
-
-#alert-success{
+#alert-success {
   position: absolute;
-  opacity:0;
-  width:100%;
-  transition:all .5s linear;
+  opacity: 0;
+  width: 100%;
+  transition: all 0.5s linear;
   top: -100px !important;
 }
 
@@ -98,27 +95,34 @@ input:valid {
   top: -60px !important;
 }
 
-#car-list { transition: all .5s linear;}
+#car-list {
+  transition: all 0.5s linear;
+}
 .card {
   opacity: 1;
   position: relative;
-  left:0;
+  left: 0;
   height: 234px;
   overflow: hidden;
-  transition: all .5s linear;
+  transition: all 0.5s linear;
 }
 .card.deleted {
   opacity: 0;
   height: 0;
-  left:-200px;
+  left: -200px;
 }
 
-
-
 /* Tricks footer bottom */
-body { position: relative; min-height: 100vh; }
-main { padding-bottom: 60px; }
+body {
+  position: relative;
+  min-height: 100vh;
+}
+main {
+  padding-bottom: 60px;
+}
 footer {
   position: absolute;
-  left:0; right:0; bottom:0;
+  left: 0;
+  right: 0;
+  bottom: 0;
 }
