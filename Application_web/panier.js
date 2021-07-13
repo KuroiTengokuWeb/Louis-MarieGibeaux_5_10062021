@@ -1,4 +1,5 @@
 var cart = JSON.parse(localStorage.getItem('cart')) || [];
+var priceTotal = document.getElementById("cart_total");
 
 function add_cart(idProd) {
     //////////////////////////////////////////////
@@ -46,13 +47,6 @@ function calcTotalPrice() {
     return total;
 }
 
-if (document.getElementById("cart_total")) {
-    var totals = "<p>Prix total : </p><p>" + calcTotalPrice() + "€</p>";
-
-    document.getElementById("cart_total").innerHTML = totals;
-} else {
-    console.log("totals manquant");
-}
 //////////////////////////////////////////////
 // Edit La qty du produit dans le panier
 function editProductQty(idProd) {
@@ -65,8 +59,7 @@ function editProductQty(idProd) {
     localStorage.setItem("cart", JSON.stringify(cart));
 
     // Update du prix total
-    var total = calcTotalPrice();
-    document.getElementById("cart_total").childNodes[1].innerHTML = total + "€";
+    document.getElementById("cart_total").childNodes[1].innerHTML = calcTotalPrice() / 100 + "€";
 }
 
 
@@ -126,7 +119,7 @@ function getProduct() {
                     '</h5><p class="card-text">' +
                     value.description +
                     '</p><label for="custom">Couleurs : </label><select id="custom"></select></div></div><div class="col-md-2"><div class="card-body"><p class="card-text price-color"> Prix : <span class="price">' +
-                    value.price +
+                    value.price / 100 +
                     '€</span></p><p class="card-text">Quantité : </p><input class="w-25" id="prod-qty-' +
                     value._id + '" name="prod-qty-' +
                     value._id + '" type="number" min="1" value="1" /><button class="btn" onclick="add_cart(\'' +
@@ -136,8 +129,6 @@ function getProduct() {
                 for (i in value.colors) {
                     clr.innerHTML += "<option>" + value.colors[i] + "</option>";
                 }
-            } else {
-                //console.log("error id list_prod");
             }
         })
         .catch(function (err) {
@@ -168,7 +159,7 @@ document.addEventListener('submit', function (event) {
         contact: Object.fromEntries(new FormData(event.target)),
         products: convertCart()
     };
-    console.log(orderReq);
+    
     // Requête fetch POST
     fetch('http://localhost:3000/api/teddies/order', {
         method: 'POST',
@@ -182,7 +173,15 @@ document.addEventListener('submit', function (event) {
         }
         return Promise.reject(response);
     }).then(function (data) {
-        console.log(data);
+        var order = {
+            id : data.orderId,
+            price: calcTotalPrice()
+        };
+        localStorage.setItem("order", JSON.stringify(order));
+       
+
+        window.location.href = "confirmation.html";
+        console.log('okok');
         // Message de validation de la commande + info
         var check = document.getElementById("check-form");
         check.innerHTML = "La commande " + data.orderId +
@@ -192,6 +191,9 @@ document.addEventListener('submit', function (event) {
         console.warn(error);
     });
 });
+
+
+
 
 //////////////////////////////////////////////
 // Debug

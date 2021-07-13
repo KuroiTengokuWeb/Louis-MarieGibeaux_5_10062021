@@ -75,3 +75,11 @@ footer a:hover {
 .card{
   width: 30%;
 }*/
+
+input:invalid {
+  background-color: red;
+}
+
+input:valid {
+  background-color:  yellow;
+}
