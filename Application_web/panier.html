@@ -35,7 +35,10 @@
     </div>
   </nav>
   <main>
-    <div class="container">
+    <div class="container position-relative">
+      <div id="alert-success" class="mb-2 alert alert-success">
+        <p class="mb-0">Le produit à bien été supprimé de votre panier ! </p>
+      </div>
       <div class="row">
         <div class="col">
           <h1>Panier</h1>
@@ -49,31 +52,26 @@
         <form id="form">
           <div class="mb-3">
             <label for="firstname" class="form-label">Nom</label>
-            <input type="text" class="form-control" name="firstName" id="firstname" required>
+            <input type="text" class="form-control" pattern="^[a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ]+([- ]{0,1}[a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ]+){1,}$" name="firstName" id="firstname" required>
           </div>
           <div class="mb-3">
             <label for="lastname" class="form-label">Prénom</label>
-            <input type="text" class="form-control" name="lastName" id="lastname" required>
+            <input type="text" class="form-control" pattern="^[a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ]+([- ]{0,1}[a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ]+){1,}$" name="lastName" id="lastname" required>
           </div>
           <div class="mb-3">
             <label for="address" class="form-label">Adresse</label>
-            <input type="text" class="form-control" name="address" id="address" required>
+            <input type="text" class="form-control" pattern="[a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ0-9 -]+" name="address" id="address" required>
           </div>
           <div class="mb-3">
             <label for="city" class="form-label">Ville</label>
-            <input type="text" class="form-control" name="city" id="city" required>
+            <input type="text" class="form-control" pattern="^[a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ]+([- ]{0,1}[a-zA-Zàáâãäåçèéêëìíîïðòóôõöùúûüýÿ]+){1,}$" name="city" id="city" required>
           </div>
           <div class="mb-3">
             <label for="email" class="form-label">Adresse email</label>
             <input type="email" class="form-control" name="email" id="email" required>
           </div>
-          <!--<div class="mb-3 form-check">
-            <input type="checkbox" class="form-check-input" id="exampleCheck1">
-            <label class="form-check-label" for="exampleCheck1">Check me out</label>
-          </div>-->
           <button type="submit" class="btn">Passer la commande</button>
         </form>
-        <p id="check-form"></p>
       </div>
     </div>
   </main>

@@ -2,37 +2,46 @@ var cart = JSON.parse(localStorage.getItem('cart')) || [];
 var priceTotal = document.getElementById("cart_total");
 
 function add_cart(idProd) {
+    //console.log(cart);
     //////////////////////////////////////////////
     // Dans script.js déclaration de products 
     // products = la liste de tout les produits fetch et set dans script.js
+    // inputColor = document.getElementById("product-color-" + idProd).value;
 
-    var product = products.filter(product => product._id == idProd)[0] || [],
-        cartProduct = cart.filter(product => product._id == idProd)[0],
-        inputQty = parseInt(document.getElementById("prod-qty-" + idProd).value),
-        hasProductInCart = cartProduct != undefined;
-    //////////////////////////////////////////////
-    // Si la qty du produit est undefined on le set à 1
-    // Sinon on set la qty existante
-    if (product.qty === undefined) product.qty = inputQty;
-    // else product.qty = parseInt(product.qty) + inputQty;
+    const product = products.filter(product => product._id == idProd)[0] || [],
+          inputQty = parseInt(document.getElementById("prod-qty-" + idProd).value),
+          inputColor = document.getElementById("product-color-" + idProd).value,
+          cartItemId = idProd + inputColor;
 
-    // En ternaire
-    //product.qty = product.qty == undefined ? 1 : product.qty
 
-    // TODO couleur dans panier + split qty product couleur differente
-    //console.log(product);
+    let cartProduct = cart.filter(cartProduct => cartProduct.cartItemId == cartItemId)[0];
+
+    const hasProductInCart = cartProduct != undefined;
 
     //////////////////////////////////////////////
     // Si le produit selectionner existe dans le panier alors on incrémente juste la qty
     // Sinon on push dans le panier le produit
     if (hasProductInCart) cartProduct.qty = parseInt(cartProduct.qty) + inputQty;
-    else cart.push(product);
+    else {
+        //////////////////////////////////////////////
+        // Clone l'objet product, pour créer une nouvelle référence 
+        let newProd = { ...product };
+
+        newProd.qty = inputQty;
+        newProd.selectedColor = inputColor;
+
+        // Création d'une id unique pour un produit dans le panier
+        newProd.cartItemId = cartItemId;
+
+        cart.push(newProd);
+    }
 
     // Set dans le localStorage, dans la key cart les produits 
     localStorage.setItem("cart", JSON.stringify(cart));
-
-    /*var test = document.getElementById("custom");
-    console.log(test);*/
+    
+    showAlert();
+    
+    //window.location.href = "panier.html";
 }
 
 //////////////////////////////////////////////
@@ -49,10 +58,10 @@ function calcTotalPrice() {
 
 //////////////////////////////////////////////
 // Edit La qty du produit dans le panier
-function editProductQty(idProd) {
+function editProductQty(cartItemId) {
+    var product = cart.filter(product => product.cartItemId == cartItemId)[0],
+        inputQty = parseInt(document.getElementById("prod-qty-" + cartItemId).value);
 
-    var product = cart.filter(product => product._id == idProd)[0],
-        inputQty = parseInt(document.getElementById("prod-qty-" + idProd).value);
     product.qty = inputQty;
 
     if (product.qty <= 0) deleteProduct(idProd);
@@ -65,75 +74,33 @@ function editProductQty(idProd) {
 
 //////////////////////////////////////////////
 // Supprime le produit du panier
-function deleteProduct(idProd) {
-    cart = cart.filter(product => product._id != idProd);
+function deleteProduct(cartItemId) {
+    cart = cart.filter(product => product.cartItemId != cartItemId);
     localStorage.setItem("cart", JSON.stringify(cart));
 
-    calcTotalPrice();
+    showAlert();
+    document.getElementById(cartItemId).classList.add("deleted");
+    setTimeout(() => {
+        document.getElementById(cartItemId).remove();
+    }, 1000);
+
+    document.getElementById("cart_total").childNodes[1].innerHTML = calcTotalPrice() / 100 + "€";
 }
+
+function showAlert(){
+
+    document.getElementById("alert-success").classList.add("show");
+
+    setTimeout(() => {
+        document.getElementById("alert-success").classList.remove("show");
+    }, 2000);
+}
+
 
 //////////////////////////////////////////////
 // Retourne les produits du panier
 function getCart() {
     return JSON.parse(localStorage.getItem("cart"));
-}
-
-//////////////////////////////////////////////
-// Retourne l'id du produit contenu dans l'url
-function getURL() {
-    const queryString = window.location.search;
-    if (queryString) {
-        const urlParams = new URLSearchParams(queryString);
-        const product_id = urlParams.get('id');
-        console.log(product_id);
-        return product_id;
-    }
-}
-
-//////////////////////////////////////////////
-// Retourne la fiche d'un produit
-function getProduct() {
-    let product_id = getURL();
-    /*if (product_id) {
-        console.log(products);
-        let prod = cart.filter(product => product._id == product_id)[0] || [];
-    }*/
-    fetch("http://localhost:3000/api/teddies/" + product_id)
-        .then(function (res) {
-            if (res.ok) {
-                return res.json();
-            }
-        })
-        .then(function (value) {
-            if (document.getElementById("article")) {
-                prod = document.getElementById("article");
-                prod.innerHTML +=
-                    '<div class="card mb-3" data-id="' +
-                    value._id +
-                    '"><div class="row g-0 bg-color"><div class="col-md-4"><div class="card-body"><img class="product_image" src="' +
-                    value.imageUrl +
-                    '" alt="' +
-                    value.name +
-                    '"></div></div><div class="col-md-6"><div class="card-body"><h5 class="card-title">' +
-                    value.name +
-                    '</h5><p class="card-text">' +
-                    value.description +
-                    '</p><label for="custom">Couleurs : </label><select id="custom"></select></div></div><div class="col-md-2"><div class="card-body"><p class="card-text price-color"> Prix : <span class="price">' +
-                    value.price / 100 +
-                    '€</span></p><p class="card-text">Quantité : </p><input class="w-25" id="prod-qty-' +
-                    value._id + '" name="prod-qty-' +
-                    value._id + '" type="number" min="1" value="1" /><button class="btn" onclick="add_cart(\'' +
-                    value._id +
-                    '\')">Ajouter au panier</button></div></div></div></div></div></div>';
-                var clr = document.getElementById("custom");
-                for (i in value.colors) {
-                    clr.innerHTML += "<option>" + value.colors[i] + "</option>";
-                }
-            }
-        })
-        .catch(function (err) {
-            console.log(err);
-        });
 }
 
 //////////////////////////////////////////////
@@ -159,7 +126,7 @@ document.addEventListener('submit', function (event) {
         contact: Object.fromEntries(new FormData(event.target)),
         products: convertCart()
     };
-    
+
     // Requête fetch POST
     fetch('http://localhost:3000/api/teddies/order', {
         method: 'POST',
@@ -174,26 +141,15 @@ document.addEventListener('submit', function (event) {
         return Promise.reject(response);
     }).then(function (data) {
         var order = {
-            id : data.orderId,
+            id: data.orderId,
             price: calcTotalPrice()
         };
         localStorage.setItem("order", JSON.stringify(order));
-       
-
         window.location.href = "confirmation.html";
-        console.log('okok');
-        // Message de validation de la commande + info
-        var check = document.getElementById("check-form");
-        check.innerHTML = "La commande " + data.orderId +
-            " est validée. Nombre d'article " + data.products.length;
-        check.classList.add("alert-success");
     }).catch(function (error) {
         console.warn(error);
     });
 });
-
-
-
 
 //////////////////////////////////////////////
 // Debug

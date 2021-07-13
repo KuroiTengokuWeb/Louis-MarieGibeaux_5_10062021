@@ -83,3 +83,42 @@ input:invalid {
 input:valid {
   background-color:  yellow;
 }
+
+
+#alert-success{
+  position: absolute;
+  opacity:0;
+  width:100%;
+  transition:all .5s linear;
+  top: -100px !important;
+}
+
+#alert-success.show {
+  opacity: 1;
+  top: -60px !important;
+}
+
+#car-list { transition: all .5s linear;}
+.card {
+  opacity: 1;
+  position: relative;
+  left:0;
+  height: 234px;
+  overflow: hidden;
+  transition: all .5s linear;
+}
+.card.deleted {
+  opacity: 0;
+  height: 0;
+  left:-200px;
+}
+
+
+
+/* Tricks footer bottom */
+body { position: relative; min-height: 100vh; }
+main { padding-bottom: 60px; }
+footer {
+  position: absolute;
+  left:0; right:0; bottom:0;
+}
