@@ -1,21 +1,3 @@
-fetch("http://localhost:3000/api/teddies")
-    .then(function (res) {
-        if (res.ok) {
-            return res.json();
-        }
-    })
-    .then(function (value) {
-        // recuperation de la liste des produits pour panier.js
-        products = value;
-        // Affichage liste article
-        if (prodList) {
-            allProduct(value);
-        }
-    })
-    .catch(function (err) {
-        console.log(err);
-    });
-
 //////////////////////////////////////////////
 // Retourne l'id du produit contenu dans l'url
 function getURL() {
@@ -52,11 +34,13 @@ function getProduct() {
                     value.name +
                     '</h5><p class="card-text">' +
                     value.description +
-                    '</p><label for="product-color-' + value._id + '">Couleurs : </label><select id="product-color-' + value._id + '"></select></div></div><div class="col-md-2"><div class="card-body"><p class="card-text price-color"> Prix : <span class="price">' +
+                    '</p><label for="product-color-' +
+                    value._id + '">Couleurs : </label><select id="product-color-' +
+                    value._id + '"></select></div></div><div class="col-md-2"><div class="card-body"><p class="card-text price-color"> Prix : <span class="price">' +
                     value.price / 100 +
                     '€</span></p><p class="card-text">Quantité : </p><input class="w-25" id="prod-qty-' +
                     value._id + '" name="prod-qty-' +
-                    value._id + '" type="number" min="1" value="1" /><button class="btn" onclick="add_cart(\'' +
+                    value._id + '" type="number" min="1" value="1" /><button class="btn" onclick="addCart(\'' +
                     value._id +
                     '\')">Ajouter au panier</button></div></div></div></div></div></div>';
                 var clr = document.getElementById("product-color-" + value._id);

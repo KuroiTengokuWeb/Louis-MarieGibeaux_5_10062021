@@ -1,7 +1,46 @@
 var prodList = document.getElementById("prod-list"),
     cartList = document.getElementById("cart-list"),
     article = document.getElementById("article"),
-    products;
+    products,
+    url = document.location.href;
+
+
+// renvoie le nom du fichier de l'url avec les parametres
+function getFileName(currentURL) {
+    // Supprime l'éventuel dernier slash de l'URL
+    currentURL = currentURL.replace(/\/$/, "");
+    // Retourne uniquement la portion derrière le dernier slash de currentURL
+    return currentURL.substring(currentURL.lastIndexOf("/") + 1);
+}
+
+// renvoie le nom fichier sans les parametres
+function removeUrlParam(url) {
+    url = url.substr(0, url.indexOf("?"));
+    a = url.split("/");
+    return a[a.length - 1];
+}
+
+url = getFileName(url);
+
+// Stock dans le localStorage les produits
+fetch("http://localhost:3000/api/teddies")
+    .then(function (res) {
+        if (res.ok) {
+            return res.json();
+        }
+    })
+    .then(function (value) {
+        // recuperation de la liste des produits pour panier.js
+        products = value;
+        // Affichage de la liste d'articles
+        if (url == "index.html") {
+            allProduct(value);
+        }
+    })
+    .catch(function (err) {
+        console.log(err);
+    });
+
 
 function allProduct(productList) {
     // creation de la card pour chaque produit
@@ -9,12 +48,12 @@ function allProduct(productList) {
         prodList.innerHTML +=
             '<div class="card mb-3" data-id="' +
             productList[i]._id +
-            '"><div class="row g-0 bg-color"><div class="col-md-4"><div class="card-body"><a href="file:///C:/Users/Kuroi_Tengoku/Desktop/Formation/Projet/P5_Gibeaux_Louis-Marie_dev/Application_web/product.html?id=' +
+            '"><div class="row g-0 bg-color"><div class="col-md-4"><div class="card-body"><a href="product.html?id=' +
             productList[i]._id + '"><img class="product_image" src="' +
             productList[i].imageUrl +
             '" alt="' +
             productList[i].name +
-            '"></a></div></div><div class="col-md-6"><div class="card-body"><a href="file:///C:/Users/Kuroi_Tengoku/Desktop/Formation/Projet/P5_Gibeaux_Louis-Marie_dev/Application_web/product.html?id=' +
+            '"></a></div></div><div class="col-md-6"><div class="card-body"><a href="product.html?id=' +
             productList[i]._id + '"><h2 class="card-title">' +
             productList[i].name +
             '</h2></a><p class="card-text">' +
@@ -26,12 +65,12 @@ function allProduct(productList) {
 }
 
 // Affichage page produit
-if (article) {
+if (removeUrlParam(url) == "product.html") {
     getProduct();
 }
 
 // Affichage du panier
-if (cartList) {
+if (url == "panier.html") {
     var cart = getCart();
     for (i in cart) {
         cartList.innerHTML +=
@@ -57,15 +96,12 @@ if (cartList) {
             cart[i].qty + '" /><button class="btn" onclick="deleteProduct(\'' +
             cart[i].cartItemId + '\')">Supprimer</button></div></div></div></div></div></div>';
     }
-}
-
-// Affichage prix total panier
-if (priceTotal) {
     priceTotal.innerHTML = "<p>Prix total : </p><p>" + calcTotalPrice() / 100 + "€</p>";
+
 }
 
 // Affichage page confirmation
-if (document.getElementById("order")) {
+if (url == "confirmation.html") {
     var order = JSON.parse(localStorage.getItem("order"));
     document.getElementById("order-id").innerHTML = order.id;
     document.getElementById("order-price").innerHTML = order.price / 100;

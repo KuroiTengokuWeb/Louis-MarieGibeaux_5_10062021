@@ -1,42 +1,57 @@
 #cart_total {
   justify-content: flex-end;
 }
+
 #cart_total p:first-child {
   margin-right: 10px;
 }
+
 #cart_total p:last-child {
   color: burlywood;
 }
+
 .price {
   color: white !important;
   display: contents;
   margin-left: 3%;
 }
+
 #cart_total p:last-child,
 .price {
   font-weight: bold;
 }
+
 #custom {
   margin-left: 10px;
 }
+
 a {
   text-decoration: none;
   color: white;
 }
+
 a:hover {
   color: burlywood;
 }
+
 .product_image {
   height: 200px;
 }
+
 footer a,
 label {
   color: white;
 }
+
 .bg-color {
   background-color: darkcyan;
   color: white;
 }
+
+.bg-radius {
+  border-radius: 5px;
+}
+
 .price-color {
   font-size: 18px;
   justify-content: center;
@@ -49,37 +64,33 @@ h5 {
   color: white !important;
   font-size: 20px;
 }
+
 .nav-link:hover {
   color: burlywood !important;
 }
+
 footer a {
   color: white !important;
 }
+
 footer a:hover {
   color: burlywood !important;
 }
+
 .btn {
-  color: burlywood;
+  color: darkcyan;
   border-color: burlywood;
   background-color: white;
 }
+
 .btn:hover {
   color: white;
   border-color: burlywood;
   background-color: burlywood;
 }
+
 .card-text {
   display: inline-block;
-}
-
-/*
-input:invalid {
-  background-color: red;
-}
-*/
-input:valid {
-  border: #0dcaf0 solid 1px;
-  background: #0dcaf0;
 }
 
 #alert-success {
@@ -98,6 +109,7 @@ input:valid {
 #car-list {
   transition: all 0.5s linear;
 }
+
 .card {
   opacity: 1;
   position: relative;
@@ -106,6 +118,7 @@ input:valid {
   overflow: hidden;
   transition: all 0.5s linear;
 }
+
 .card.deleted {
   opacity: 0;
   height: 0;
@@ -117,9 +130,11 @@ body {
   position: relative;
   min-height: 100vh;
 }
+
 main {
   padding-bottom: 60px;
 }
+
 footer {
   position: absolute;
   left: 0;

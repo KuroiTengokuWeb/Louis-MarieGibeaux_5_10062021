@@ -1,7 +1,7 @@
 var cart = JSON.parse(localStorage.getItem('cart')) || [];
 var priceTotal = document.getElementById("cart_total");
 
-function add_cart(idProd) {
+function addCart(idProd) {
     //////////////////////////////////////////////
     // Dans script.js déclaration de products 
     // products = la liste de tout les produits fetch et set dans script.js
@@ -31,6 +31,7 @@ function add_cart(idProd) {
         // Création d'une id unique pour un produit dans le panier
         newProd.cartItemId = cartItemId;
 
+        // Ajout dans le panier
         cart.push(newProd);
     }
 
@@ -38,8 +39,6 @@ function add_cart(idProd) {
     localStorage.setItem("cart", JSON.stringify(cart));
 
     showAlert();
-
-    //window.location.href = "panier.html";
 }
 
 //////////////////////////////////////////////
@@ -85,6 +84,7 @@ function deleteProduct(cartItemId) {
     document.getElementById("cart_total").childNodes[1].innerHTML = calcTotalPrice() / 100 + "€";
 }
 
+// Affiche et retire l'alert
 function showAlert() {
 
     document.getElementById("alert-success").classList.add("show");
@@ -142,8 +142,11 @@ document.addEventListener('submit', function (event) {
             id: data.orderId,
             price: calcTotalPrice()
         };
+        // Stock le numero de commande et le prix total
         localStorage.setItem("order", JSON.stringify(order));
+        // Delete le contenu du panier
         localStorage.setItem("cart", JSON.stringify(""));
+        // Redirige sur la page de confirmation de commande
         window.location.href = "confirmation.html";
     }).catch(function (error) {
         console.warn(error);
