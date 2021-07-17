@@ -1,6 +1,4 @@
-var prodList = document.getElementById("prod-list"),
-    cartList = document.getElementById("cart-list"),
-    article = document.getElementById("article"),
+var cartList = document.getElementById("cart-list"),
     products,
     url = document.location.href;
 
@@ -39,9 +37,6 @@ url = getFileName(url);
 if (url == "index.html") {
     getAllProduct();
 }
-//getProduct(getUrlParamValue('id'));
-//test = Promise.res(test);
-
 
 // Affichage page produit
 if (removeUrlParam(url) == "product.html") {
@@ -95,7 +90,6 @@ if (localStorage.getItem('cart') && url == "panier.html") {
             contact: Object.fromEntries(new FormData(event.target)),
             products: convertCart()
         };
-
         // Requête fetch POST
         fetch('http://localhost:3000/api/teddies/order', {
             method: 'POST',
