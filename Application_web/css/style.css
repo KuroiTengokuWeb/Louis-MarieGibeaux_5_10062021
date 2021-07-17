@@ -1,6 +1,10 @@
 #cart_total {
   justify-content: flex-end;
 }
+#cart_total,
+#order-form {
+  display: none !important;
+}
 
 #cart_total p:first-child {
   margin-right: 10px;

@@ -5,6 +5,7 @@ var prodList = document.getElementById("prod-list"),
     url = document.location.href;
 
 
+
 // renvoie le nom du fichier de l'url avec les parametres
 function getFileName(currentURL) {
     // Supprime l'éventuel dernier slash de l'URL
@@ -13,6 +14,7 @@ function getFileName(currentURL) {
     return currentURL.substring(currentURL.lastIndexOf("/") + 1);
 }
 
+//////////////////////////////////////////////
 // renvoie le nom fichier sans les parametres
 function removeUrlParam(url) {
     url = url.substr(0, url.indexOf("?"));
@@ -20,53 +22,30 @@ function removeUrlParam(url) {
     return a[a.length - 1];
 }
 
-url = getFileName(url);
-
-// Stock dans le localStorage les produits
-fetch("http://localhost:3000/api/teddies")
-    .then(function (res) {
-        if (res.ok) {
-            return res.json();
-        }
-    })
-    .then(function (value) {
-        // recuperation de la liste des produits pour panier.js
-        products = value;
-        // Affichage de la liste d'articles
-        if (url == "index.html") {
-            allProduct(value);
-        }
-    })
-    .catch(function (err) {
-        console.log(err);
-    });
-
-
-function allProduct(productList) {
-    // creation de la card pour chaque produit
-    for (i in productList) {
-        prodList.innerHTML +=
-            '<div class="card mb-3" data-id="' +
-            productList[i]._id +
-            '"><div class="row g-0 bg-color"><div class="col-md-4"><div class="card-body"><a href="product.html?id=' +
-            productList[i]._id + '"><img class="product_image" src="' +
-            productList[i].imageUrl +
-            '" alt="' +
-            productList[i].name +
-            '"></a></div></div><div class="col-md-6"><div class="card-body"><a href="product.html?id=' +
-            productList[i]._id + '"><h2 class="card-title">' +
-            productList[i].name +
-            '</h2></a><p class="card-text">' +
-            productList[i].description +
-            '</p></div></div><div class="col-md-2"><div class="card-body"><p class="card-text price-color">Prix : <span class="price">' +
-            productList[i].price / 100 +
-            '€</span></p></div></div></div></div>';
+//////////////////////////////////////////////
+// Retourne l'id du produit contenu dans l'url
+function getUrlParamValue(param) {
+    const queryString = window.location.search;
+    if (queryString) {
+        const urlParams = new URLSearchParams(queryString);
+        const product_id = urlParams.get(param);
+        return product_id;
     }
 }
 
+url = getFileName(url);
+
+// Affichage page accueil
+if (url == "index.html") {
+    getAllProduct();
+}
+//getProduct(getUrlParamValue('id'));
+//test = Promise.res(test);
+
+
 // Affichage page produit
 if (removeUrlParam(url) == "product.html") {
-    getProduct();
+    getProduct(getUrlParamValue('id'));
 }
 
 // Affichage du panier
@@ -100,9 +79,65 @@ if (url == "panier.html") {
 
 }
 
+//////////////////////////////////////////////
+// Ajoute la fonction d'envoi ou modifie la page si panier vide
+if (localStorage.getItem('cart') && url == "panier.html") {
+    document.getElementById('empty-cart').style.setProperty('display', 'none', "important");
+    document.getElementById('cart_total').style.setProperty('display', 'flex', "important");
+    document.getElementById('order-form').style.setProperty('display', 'flex', "important");
+    // Envoi du formulaire
+    document.addEventListener('submit', function (event) {
+
+        event.preventDefault();
+
+        // Contenu de la requête
+        var orderReq = {
+            contact: Object.fromEntries(new FormData(event.target)),
+            products: convertCart()
+        };
+
+        // Requête fetch POST
+        fetch('http://localhost:3000/api/teddies/order', {
+            method: 'POST',
+            body: JSON.stringify(orderReq),
+            headers: {
+                'Content-type': 'application/json; charset=UTF-8'
+            }
+        }).then(function (response) {
+            if (response.ok) {
+                return response.json();
+            }
+            return Promise.reject(response);
+        }).then(function (data) {
+            var order = {
+                id: data.orderId,
+                price: calcTotalPrice()
+            };
+            // Stock le numero de commande et le prix total
+            localStorage.setItem("order", JSON.stringify(order));
+            // Delete le contenu du panier
+            localStorage.removeItem("cart");
+            // Redirige sur la page de confirmation de commande
+            window.location.href = "confirmation.html";
+        }).catch(function (error) {
+            console.warn(error);
+        });
+    });
+}
+
+//////////////////////////////////////////////
 // Affichage page confirmation
 if (url == "confirmation.html") {
-    var order = JSON.parse(localStorage.getItem("order"));
-    document.getElementById("order-id").innerHTML = order.id;
-    document.getElementById("order-price").innerHTML = order.price / 100;
+    if (localStorage.getItem('order')) {
+        var order = JSON.parse(localStorage.getItem("order"));
+        document.getElementById("order-id").innerHTML = order.id;
+        document.getElementById("order-price").innerHTML = order.price / 100;
+
+        window.addEventListener('beforeunload', function (e) {
+            localStorage.removeItem("order");
+        });
+    } else {
+        // Redirige a l'accueil si le localStorage order n'existe pas
+        window.location.href = "index.html";
+    }
 }

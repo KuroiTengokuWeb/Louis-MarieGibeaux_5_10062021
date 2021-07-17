@@ -1,27 +1,21 @@
 var cart = JSON.parse(localStorage.getItem('cart')) || [];
 var priceTotal = document.getElementById("cart_total");
 
+//////////////////////////////////////////////
+// Ajout d'un produit dans le panier
 function addCart(idProd) {
-    //////////////////////////////////////////////
-    // Dans script.js déclaration de products 
-    // products = la liste de tout les produits fetch et set dans script.js
-
-    const product = products.filter(product => product._id == idProd)[0] || [],
-        inputQty = parseInt(document.getElementById("prod-qty-" + idProd).value),
+    const inputQty = parseInt(document.getElementById("prod-qty-" + idProd).value),
         inputColor = document.getElementById("product-color-" + idProd).value,
         cartItemId = idProd + inputColor;
-
 
     let cartProduct = cart.filter(cartProduct => cartProduct.cartItemId == cartItemId)[0];
 
     const hasProductInCart = cartProduct != undefined;
 
-    //////////////////////////////////////////////
     // Si le produit selectionner existe dans le panier alors on incrémente juste la qty
     // Sinon on push dans le panier le produit
     if (hasProductInCart) cartProduct.qty = parseInt(cartProduct.qty) + inputQty;
     else {
-        //////////////////////////////////////////////
         // Clone l'objet product, pour créer une nouvelle référence 
         let newProd = { ...product };
 
@@ -68,7 +62,6 @@ function editProductQty(cartItemId) {
     document.getElementById("cart_total").childNodes[1].innerHTML = calcTotalPrice() / 100 + "€";
 }
 
-
 //////////////////////////////////////////////
 // Supprime le produit du panier
 function deleteProduct(cartItemId) {
@@ -82,8 +75,15 @@ function deleteProduct(cartItemId) {
     }, 1000);
 
     document.getElementById("cart_total").childNodes[1].innerHTML = calcTotalPrice() / 100 + "€";
+    if (calcTotalPrice() == 0 && localStorage.getItem('cart')) {
+        localStorage.removeItem("cart");
+        document.getElementById('empty-cart').style.setProperty('display', 'flex', "important");
+        document.getElementById('cart_total').style.setProperty('display', 'none', "important");
+        document.getElementById('order-form').style.setProperty('display', 'none', "important");
+    }
 }
 
+//////////////////////////////////////////////
 // Affiche et retire l'alert
 function showAlert() {
 
@@ -93,7 +93,6 @@ function showAlert() {
         document.getElementById("alert-success").classList.remove("show");
     }, 2000);
 }
-
 
 //////////////////////////////////////////////
 // Retourne les produits du panier
@@ -112,46 +111,6 @@ function convertCart() {
     }
     return idList;
 }
-
-//////////////////////////////////////////////
-// Envoi du formulaire
-document.addEventListener('submit', function (event) {
-
-    event.preventDefault();
-
-    // Contenu de la requête
-    var orderReq = {
-        contact: Object.fromEntries(new FormData(event.target)),
-        products: convertCart()
-    };
-
-    // Requête fetch POST
-    fetch('http://localhost:3000/api/teddies/order', {
-        method: 'POST',
-        body: JSON.stringify(orderReq),
-        headers: {
-            'Content-type': 'application/json; charset=UTF-8'
-        }
-    }).then(function (response) {
-        if (response.ok) {
-            return response.json();
-        }
-        return Promise.reject(response);
-    }).then(function (data) {
-        var order = {
-            id: data.orderId,
-            price: calcTotalPrice()
-        };
-        // Stock le numero de commande et le prix total
-        localStorage.setItem("order", JSON.stringify(order));
-        // Delete le contenu du panier
-        localStorage.setItem("cart", JSON.stringify(""));
-        // Redirige sur la page de confirmation de commande
-        window.location.href = "confirmation.html";
-    }).catch(function (error) {
-        console.warn(error);
-    });
-});
 
 //////////////////////////////////////////////
 // Debug
