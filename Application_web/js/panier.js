@@ -111,14 +111,3 @@ function convertCart() {
     }
     return idList;
 }
-
-//////////////////////////////////////////////
-// Debug
-function debug(name, vr) {
-    console.log(
-        "=============================== \n",
-        name + " : \n",
-        vr,
-        "\n =============================== \n"
-    );
-}
